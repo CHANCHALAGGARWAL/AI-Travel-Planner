@@ -23,17 +23,14 @@ import {
 } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 
-const TRAVEL_TYPES = [
-  "Solo", "Couple", "Family", "Friends", "Business", "Adventure"
-];
-
 const BUDGET_LEVELS = [
   "Budget", "Moderate", "Luxury"
 ];
 
 export default function App() {
   const [destination, setDestination] = useState('');
-  const [days, setDays] = useState('3');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [budget, setBudget] = useState('Moderate');
   const [travelType, setTravelType] = useState('Solo');
   const [loading, setLoading] = useState(false);
@@ -42,7 +39,7 @@ export default function App() {
 
   const generatePlan = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!destination) return;
+    if (!destination || !startDate || !endDate) return;
 
     setLoading(true);
     setError(null);
@@ -53,43 +50,59 @@ export default function App() {
       const model = "gemini-3-flash-preview";
       
       const prompt = `
-        You are an intelligent AI Travel Planner.
-        Generate a structured travel plan for:
+        You are an AI Smart Travel Planner.
+        Generate a comprehensive and inspiring travel plan for:
         - Destination: ${destination}
-        - Duration: ${days} days
+        - Travel Dates: ${startDate} to ${endDate}
         - Budget: ${budget}
         - Travel Type: ${travelType}
 
-        Include the following sections in Markdown format:
+        Format the response in these EXACT sections using Markdown:
 
-        ## 🌍 Destination Overview
-        Give a short description of the place.
+        # 🌍 Destination Overview
+        Provide a captivating overview of the destination, its vibe, and why it's a great choice for a ${travelType} trip.
 
-        ## 📅 Day-by-Day Itinerary
-        Provide a simple plan for each day with activities. For each attraction or activity mentioned, suggest the best time of day to visit (morning, afternoon, or evening).
+        # 📅 Travel Itinerary
+        Generate a detailed day-by-day travel itinerary. 
+        - Suggest specific tourist attractions, local food spots, and travel tips for each day. 
+        - For each attraction, suggest the best time of day to visit (Morning, Afternoon, or Evening) to avoid crowds or get the best light.
 
-        ## 📍 Top Attractions
-        List 4–5 famous places with short descriptions.
+        # 💰 Budget Estimate
+        Estimate the total travel budget in USD. 
+        - Break it down into: Transport (flights/local), Accommodation, Food, and Activities/Attractions.
+        - Provide a total estimated range.
 
-        ## 🍜 Local Food to Try
-        Suggest 3 popular dishes.
+        # 🍜 Food Recommendations
+        Suggest 3-5 specific local restaurants, cafes, or street food areas. Include what dish to order at each.
 
-        ## 💰 Budget Breakdown
-        Estimate cost for transport, food, attractions, and others.
+        # 💡 Travel Tips
+        Provide essential travel tips including:
+        - Local customs and etiquette.
+        - Best way to get around (transportation).
+        - Safety advice for ${travelType === 'Solo' ? 'solo travelers' : 'groups'}.
+        - One "insider secret" for this destination.
 
-        ## ✨ Hidden Gems
-        Suggest 2 lesser-known places.
+        ${travelType === 'Solo' ? `
+        # 🤝 Possible Travel Companions
+        **Travel Companion Finder Feature Activated**
+        Based on your destination and dates, here are other travelers looking for companions:
 
-        ## 💡 Travel Tips
-        Provide useful travel advice.
+        1. **Companion A**
+           - **Name:** [Invent a realistic name and origin, e.g., "Marco from Italy"]
+           - **Dates:** [Dates within the user's range]
+           - **Interests:** [2-3 interests, e.g., "Photography, Hiking"]
+           - **Cost-Saving Suggestion:** [Specific suggestion, e.g., "Share a private car to the mountains to save $40 each."]
 
-        ## 💰 Budget Saving Tips
-        Provide specific tips to reduce travel costs and stay within the ${budget} budget for this destination.
+        2. **Companion B**
+           - **Name:** [Invent a realistic name and origin]
+           - **Dates:** [Dates within the user's range]
+           - **Interests:** [2-3 interests]
+           - **Cost-Saving Suggestion:** [Specific suggestion, e.g., "Split a 2-bedroom Airbnb in the city center."]
 
-        ## 🌤 Weather Advice and Packing Suggestions
-        Provide advice on the typical weather for this destination and suggest essential items to pack.
+        *Note: These are simulated matches based on current travel trends for ${destination}.*
+        ` : ''}
 
-        Keep the output clear and well-structured with bullet points.
+        Keep the output clear, professional, and well-structured with bullet points and bold text where appropriate.
       `;
 
       const response = await ai.models.generateContent({
@@ -117,13 +130,13 @@ export default function App() {
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-4 border border-emerald-100">
             <Sparkles className="w-3 h-3" />
-            AI-Powered Travel Planning
+            AI Smart Travel Planner
           </div>
-          <h1 className="text-5xl md:text-7xl font-serif font-medium tracking-tight mb-4">
+          <h1 className="text-5xl md:text-7xl font-serif font-medium tracking-tight mb-4 text-[#1a1a1a]">
             VoyageAI
           </h1>
           <p className="text-lg text-stone-500 max-w-xl mx-auto font-light">
-            Your personal AI travel concierge. Tell us where you want to go, and we'll handle the rest.
+            Your intelligent travel concierge. Find the perfect itinerary and connect with fellow solo travelers.
           </p>
         </motion.div>
       </header>
@@ -153,14 +166,25 @@ export default function App() {
 
             <div className="space-y-2">
               <label className="text-xs font-semibold uppercase tracking-wider text-stone-400 flex items-center gap-2">
-                <Calendar className="w-3 h-3" /> Duration (Days)
+                <Calendar className="w-3 h-3" /> Start Date
               </label>
               <input
-                type="number"
-                min="1"
-                max="30"
-                value={days}
-                onChange={(e) => setDays(e.target.value)}
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-stone-400 flex items-center gap-2">
+                <Calendar className="w-3 h-3" /> End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white"
                 required
               />
@@ -192,15 +216,22 @@ export default function App() {
               <label className="text-xs font-semibold uppercase tracking-wider text-stone-400 flex items-center gap-2">
                 <Users className="w-3 h-3" /> Travel Type
               </label>
-              <select
-                value={travelType}
-                onChange={(e) => setTravelType(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all bg-white appearance-none"
-              >
-                {TRAVEL_TYPES.map((type) => (
-                  <option key={type} value={type}>{type}</option>
+              <div className="flex gap-2">
+                {["Solo", "Group"].map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setTravelType(type)}
+                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                      travelType === type 
+                        ? 'bg-emerald-600 text-white shadow-md' 
+                        : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                    }`}
+                  >
+                    {type}
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
 
             <div className="md:col-span-2 pt-4">
@@ -257,15 +288,25 @@ export default function App() {
               </div>
 
               <div className="mt-12 flex flex-col items-center gap-6">
-                <button
-                  onClick={() => {
-                    setPlan(null);
-                    setDestination('');
-                  }}
-                  className="px-8 py-3 rounded-xl border border-stone-200 text-stone-600 font-medium hover:bg-stone-50 transition-all flex items-center gap-2"
-                >
-                  Plan another trip
-                </button>
+                <div className="flex flex-wrap justify-center gap-4">
+                  <button
+                    onClick={() => {
+                      setPlan(null);
+                      setDestination('');
+                      setStartDate('');
+                      setEndDate('');
+                    }}
+                    className="px-6 py-2.5 rounded-xl border border-stone-200 text-stone-600 font-medium hover:bg-stone-50 transition-all flex items-center gap-2 text-sm"
+                  >
+                    Plan another trip
+                  </button>
+                  <button
+                    onClick={() => window.print()}
+                    className="px-6 py-2.5 rounded-xl bg-[#1a1a1a] text-white font-medium hover:bg-stone-800 transition-all flex items-center gap-2 text-sm shadow-lg shadow-stone-200"
+                  >
+                    Download PDF
+                  </button>
+                </div>
 
                 <div className="pt-8 border-t border-stone-100 w-full flex flex-wrap gap-4 justify-center">
                   <div className="flex items-center gap-2 text-xs text-stone-400 bg-stone-50 px-3 py-1.5 rounded-full">

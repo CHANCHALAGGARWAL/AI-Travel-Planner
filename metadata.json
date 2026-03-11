@@ -1,5 +1,5 @@
 {
-  "name": "VoyageAI - Smart Travel Planner",
-  "description": "Generate personalized, structured travel itineraries based on destination, budget, and travel style using AI.",
+  "name": "AI Smart Travel Planner",
+  "description": "An intelligent travel planner that generates itineraries and helps solo travelers find companions.",
   "requestFramePermissions": []
 }
