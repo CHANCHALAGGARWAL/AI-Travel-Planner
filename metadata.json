@@ -1,0 +1,5 @@
+{
+  "name": "VoyageAI - Smart Travel Planner",
+  "description": "Generate personalized, structured travel itineraries based on destination, budget, and travel style using AI.",
+  "requestFramePermissions": []
+}
