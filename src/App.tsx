@@ -57,6 +57,8 @@ export default function App() {
         - Budget: ${budget}
         - Travel Type: ${travelType}
 
+        CRITICAL INSTRUCTION: All cost estimates MUST be in Indian Rupees (₹). Do NOT use dollars or any other currency. Show prices using the ₹ symbol.
+
         Format the response in these EXACT sections using Markdown:
 
         # 🌍 Destination Overview
@@ -65,12 +67,15 @@ export default function App() {
         # 📅 Travel Itinerary
         Generate a detailed day-by-day travel itinerary. 
         - Suggest specific tourist attractions, local food spots, and travel tips for each day. 
-        - For each attraction, suggest the best time of day to visit (Morning, Afternoon, or Evening) to avoid crowds or get the best light.
+        - For each attraction, suggest the best time of day to visit (Morning, Afternoon, or Evening).
 
-        # 💰 Budget Estimate
-        Estimate the total travel budget in USD. 
+        # 📍 Tourist Attractions
+        List the must-visit landmarks and attractions with brief descriptions.
+
+        # 💰 Budget Breakdown in Indian Rupees (₹)
+        Estimate the total travel budget in Indian Rupees (₹). 
         - Break it down into: Transport (flights/local), Accommodation, Food, and Activities/Attractions.
-        - Provide a total estimated range.
+        - Provide a total estimated range in ₹.
 
         # 🍜 Food Recommendations
         Suggest 3-5 specific local restaurants, cafes, or street food areas. Include what dish to order at each.
@@ -80,7 +85,6 @@ export default function App() {
         - Local customs and etiquette.
         - Best way to get around (transportation).
         - Safety advice for ${travelType === 'Solo' ? 'solo travelers' : 'groups'}.
-        - One "insider secret" for this destination.
 
         ${travelType === 'Solo' ? `
         # 🤝 Possible Travel Companions
@@ -88,16 +92,16 @@ export default function App() {
         Based on your destination and dates, here are other travelers looking for companions:
 
         1. **Companion A**
-           - **Name:** [Invent a realistic name and origin, e.g., "Marco from Italy"]
+           - **Name:** [Invent a realistic name and origin]
            - **Dates:** [Dates within the user's range]
-           - **Interests:** [2-3 interests, e.g., "Photography, Hiking"]
-           - **Cost-Saving Suggestion:** [Specific suggestion, e.g., "Share a private car to the mountains to save $40 each."]
+           - **Interests:** [2-3 interests]
+           - **Cost-Saving Suggestion:** [Specific suggestion in ₹, e.g., "Share a taxi to save ₹500 each."]
 
         2. **Companion B**
            - **Name:** [Invent a realistic name and origin]
            - **Dates:** [Dates within the user's range]
            - **Interests:** [2-3 interests]
-           - **Cost-Saving Suggestion:** [Specific suggestion, e.g., "Split a 2-bedroom Airbnb in the city center."]
+           - **Cost-Saving Suggestion:** [Specific suggestion in ₹]
 
         *Note: These are simulated matches based on current travel trends for ${destination}.*
         ` : ''}
